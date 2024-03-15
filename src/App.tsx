@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
 import './App.css'
 import { Button, Modal } from 'flowbite-react';
-import CardComponent from './component/CardComponentl'
+import CardComponent from './component/CardComponent'
 import FormCreateProduct from './component/FormCreateProduct';
+import NavbarComponent from './component/NavbarComponent';
+import FooterComponent from './component/FooterComponent';
 
 
 type Status = 'idle' | 'loading' | 'success' | 'error'
@@ -15,11 +17,15 @@ type Product = {
   image: string
 }
 
+
+
 function App() {
   const [openModal, setOpenModal] = useState(false);
   const [count, setCount] = useState(0)
   const [products, setProducts] = useState<Product[]>([])
   const [status, setStatus] = useState<Status>('idle')
+  const [dataForm, setDataForm] = useState({});
+
   useEffect(() => {
     setStatus('loading')
     fetch('https://fakestoreapi.com/products').then(res => res.json()).then(data => {
@@ -41,23 +47,44 @@ function App() {
   }
   // get data from children component
   function getDataForm(product:any){
-    console.log(product)
+    // console.log(product)
+    setDataForm(product)
+  }
+
+  const createProduct = () => {
+    fetch('https://fakestoreapi.com/products', {
+      method: 'POST',
+      body: JSON.stringify(dataForm),
+      headers: {
+        'content-type': 'application/json;',
+      },
+    }).then((res) => res.json()).then((data) => {
+      console.log('Create Product Successfully..!')
+      console.log(data)
+    }).catch((err) => {
+      console.log(err);
+    })
+    setOpenModal(false);
+
   }
 
   return (
     <div className='grid place-content-center p-5'>
-      <div className='flex justify-center p-6'>
+      {/* Navbar */}
+      <NavbarComponent/>
+
+        <div className='flex justify-center p-6'>
           <Button onClick={()=>setCount(count+1)}>COUNT</Button>
         </div>
-        <div className='text-center'>
-          <h1 className='text-center'>{count}</h1>
-        </div>
-        <hr className='p-8'/>
+      <div className='text-center'>
+        <h1 className='text-center'>{count}</h1>
+      </div>
+      <hr className='p-8'/>
       <div className='flex justify-center mb-8'>
         <Button onClick={() => setOpenModal(true)}>Create Product</Button> 
       </div>
       <hr className='p-8'/>
-      <div className='container mx-auto grid grid-cols-4 h-screen gap-8'>
+      <div className='container mx-auto grid grid-cols-4 gap-8 my-8'>
         {products.map((product) => (
         <CardComponent
           key={product.id} 
@@ -77,12 +104,15 @@ function App() {
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={() => setOpenModal(false)}>Add Product</Button>
+          <Button onClick={() => createProduct()}>Add Product</Button>
           <Button color="gray" onClick={() => setOpenModal(false)}>
             Cancel
           </Button>
         </Modal.Footer>
       </Modal>
+
+      {/* Footer */}
+      <FooterComponent/>
   </div>
   )
 }
