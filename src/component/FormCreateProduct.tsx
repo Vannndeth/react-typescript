@@ -1,86 +1,91 @@
-'use client';
 
-import { Label, Textarea, TextInput } from 'flowbite-react';
+import { Button, Label, TextInput, Textarea } from 'flowbite-react';
 import { useEffect, useState } from 'react';
 
-type errorType = {
-    title: string;
-    price: string;
-};
+type ErrorType = {
+    title: string,
+    price: string
+}
 
-export default function FormCreateProduct({ getDataForm }: any) {
-    const [title, setTitle] = useState('Default');
+export default function FormCreateProduct({getDataForm}: any) {
+    const [title, setTitle] = useState("");
     const [price, setPrice] = useState(0);
-    const [description, setDescription] = useState('Default hahaha');
-    const [category] = useState('electronic');
-    const [image] = useState('https://www.flowbite-react.com/images/products/apple-watch.png');
-    const [error, setError] = useState<errorType>({
-        title: 'default',
-        price: '',
+    const [descriptin, setDescrption] = useState("");
+    const [category, setCategory] = useState("");
+    const [image, setImage] = useState("https://vai.placeholder.com/150");
+
+    const [error, setError] = useState<ErrorType>({
+        title: "",
+        price: ""
     });
-    //?Validate
+
+    // Validation title and price
     useEffect(() => {
-        if (title.length < 3) {
+        if(title.length < 3){
             setError((prev) => {
-                return { ...prev, title: 'Title must be at least 3 characters' };
-            });
-        } else {
+                // console.log(prev)
+                return {
+                    ...prev, title: "Title must be at least 3 characters"
+                    // , descriptin: "At least 10 characters"
+                };
+            })
+        }else{
             setError((prev) => {
-                return { ...prev, title: '' };
-            });
+                return {
+                    ...prev, title: ""
+                };
+            })
         }
-        if (price < 1) {
+        if(price < 0){
             setError((prev) => {
-                return { ...prev, price: 'Price must be greater than 0' };
-            });
-        } else {
+                // console.log(prev)
+                return {
+                    ...prev,price: "Price must be greater than 0$"
+                };
+            })
+        }else{
             setError((prev) => {
-                return { ...prev, price: '' };
-            });
+                return {
+                    ...prev, price: ""
+                };
+            })
         }
-    }, [title, price]);
-    //Api
+    }, [title, price])
+
+    // Side effect to parent component
     useEffect(() => {
-        getDataForm({ title, price, description, category, image });
-    }, [title, price, description, category, image]);
-    return (
-        <form className="flex max-w-md flex-col gap-4">
-            <div>
-                <div className="mb-2 block">
-                    <Label htmlFor="title" value="Your title" />
-                </div>
-                <TextInput
-                    id="title"
-                    onChange={(e) => setTitle(e.target.value)}
-                    type="text"
-                    placeholder="name_to_insert"
-                    required
-                />
-                {error.title && <p className="text-red-500">{error.title}</p>}
-            </div>
-            <div>
-                <div className="mb-2 block">
-                    <Label htmlFor="price" value="Your price" />
-                </div>
-                <TextInput
-                    id="price"
-                    onChange={(e) => setPrice(parseFloat(e.target.value))}
-                    type="number"
-                    required
-                />
-                {error.price && <p className="text-red-500">{error.price}</p>}
-            </div>
-            <div>
-                <div className="mb-2 block">
-                    <Label htmlFor="description" value="Your Description:" />
-                </div>
-                <Textarea
-                    id="description"
-                    name="description"
-                    onChange={(e) => setDescription(e.target.value)}
-                    required
-                />
-            </div>
-        </form>
-    );
+        getDataForm({title, price, descriptin, category, image})
+    }, [title, price, descriptin, category, image])
+
+
+  return (
+    <form className="flex max-w-md flex-col gap-4">
+      <div>
+        <div className="mb-2 block">
+          <Label htmlFor="title" value="Product title" />
+        </div>
+        <TextInput id="title" type="text" placeholder="Apple Vision Pro" required
+        onChange={(e) => setTitle(e.target.value)}
+         />
+         {error.title && <p className='text-red-500'>{error.title}</p>}
+      </div>
+      <div>
+        <div className="mb-2 block">
+          <Label htmlFor="price" value="Product price" />
+        </div>
+        <TextInput id="price" type="number" required 
+        onChange={(e) => setPrice(parseFloat(e.target.value))}
+        />
+        {error.price && <p className='text-red-500'>{error.price}</p>}
+      </div>
+      <div>
+        <div className="mb-2 block">
+          <Label htmlFor="descriptin" value="Product descriptin" />
+        </div>
+        <Textarea id="descriptin" 
+        onChange={(e) => setDescrption(e.target.value)}
+        />
+      </div>
+    </form>
+  );
 }

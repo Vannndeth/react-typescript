@@ -39,6 +39,10 @@ function App() {
       </div>
     )
   }
+  // get data from children component
+  function getDataForm(product:any){
+    console.log(product)
+  }
 
   return (
     <div className='grid place-content-center p-5'>
@@ -50,7 +54,7 @@ function App() {
         </div>
         <hr className='p-8'/>
       <div className='flex justify-center mb-8'>
-        <Button onClick={() => setOpenModal(true)}>Add Product</Button>
+        <Button onClick={() => setOpenModal(true)}>Create Product</Button> 
       </div>
       <hr className='p-8'/>
       <div className='container mx-auto grid grid-cols-4 h-screen gap-8'>
@@ -65,7 +69,20 @@ function App() {
       </div>
       
       {/* Modal */}
-     
+      <Modal show={openModal} onClose={() => setOpenModal(false)}>
+        <Modal.Header>Create new product</Modal.Header>
+        <Modal.Body>
+          <div className="space-y-6">
+            <FormCreateProduct getDataForm={getDataForm}/>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={() => setOpenModal(false)}>Add Product</Button>
+          <Button color="gray" onClick={() => setOpenModal(false)}>
+            Cancel
+          </Button>
+        </Modal.Footer>
+      </Modal>
   </div>
   )
 }
